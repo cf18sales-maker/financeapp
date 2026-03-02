@@ -15,7 +15,7 @@ export async function seed() {
       institution: "Chase Bank",
       type: "credit_card",
       color: "#0ea5e9",
-      currency: "USD",
+      currency: "AUD",
       description: "Primary credit card for daily purchases",
     }).returning();
 
@@ -24,7 +24,7 @@ export async function seed() {
       institution: "Bank of America",
       type: "checking",
       color: "#ef4444",
-      currency: "USD",
+      currency: "AUD",
       description: "Main checking account",
     }).returning();
 
@@ -33,7 +33,7 @@ export async function seed() {
       institution: "American Express",
       type: "credit_card",
       color: "#6366f1",
-      currency: "USD",
+      currency: "AUD",
       description: "Travel rewards card",
     }).returning();
 

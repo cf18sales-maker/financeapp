@@ -1,0 +1,241 @@
+1️⃣ Who uses this app?
+Short term:
+
+You.
+
+You are User Zero.
+
+You’re:
+
+High income
+
+Multi-broker (IBKR, Moomoo, super)
+
+Multi-currency (AUD/USD)
+
+Credit-card optimized
+
+Offset-mortgage aware
+
+Asset allocation focused
+
+You are not a “basic budgeting” user.
+
+Medium term:
+
+High-income professionals like you:
+
+Credit-card heavy
+
+Invest monthly
+
+Care about surplus allocation
+
+Have multiple brokers
+
+Cross-border exposure
+
+Think:
+Tech professionals, consultants, founders, SaaS sales leaders.
+
+Long term:
+
+Yes — SaaS product others pay for.
+
+This is not a “family shared budget” tool.
+This is a Capital Allocation OS for ambitious professionals.
+
+2️⃣ Biggest missing features (from your real vision)
+
+You’re not building just “budgets.”
+
+You’re building a system that answers:
+
+“Can I safely invest $X right now?”
+
+So your critical features are:
+
+Core Phase 1
+
+Rules engine (merchant/statement based)
+
+Budget per category
+
+Month-to-date spend vs limit
+
+Surplus projection before statement closes
+
+Phase 2 Critical Additions
+
+Recurring transaction detection
+
+Fixed vs variable expense tagging
+
+Safety buffer modeling
+
+Multi-currency normalization
+
+Phase 3 (Your Real Differentiator)
+
+Investment tracking
+
+Asset allocation view
+
+Performance tracking
+
+Capital deployment suggestions
+
+Offset mortgage modeling
+
+That’s your edge.
+
+3️⃣ Bank connectivity (architectural decision)
+
+You are absolutely not going manual-only long term.
+
+Your positioning demands:
+
+Amex AU
+
+Big 4 banks
+
+IBKR
+
+Moomoo
+
+Superannuation
+
+Global capability later
+
+But:
+
+Phase 1 → Manual
+Phase 2 → AU credit cards
+Phase 3 → Brokerage APIs
+
+Connectivity is not MVP. It’s scale.
+
+4️⃣ Data beyond transactions (very important)
+
+You want:
+
+Definitely:
+
+Investments (stocks, ETFs)
+
+Brokerage accounts
+
+Performance metrics
+
+Asset allocation
+
+Likely:
+
+Property value tracking
+
+Mortgage balance
+
+Offset balance
+
+Net worth over time
+
+Because you think in:
+Total capital allocation.
+
+You are not a “monthly cash flow only” user.
+
+5️⃣ Reporting & exports
+
+You will want:
+
+CSV export (always)
+
+PDF monthly snapshot
+
+Annual tax summary export
+
+Portfolio performance export
+
+Accountant-friendly reports
+
+Given your tax complexity (AU + cross-border), this matters.
+
+6️⃣ Platform
+
+Phase 1:
+Web only.
+
+Phase 2:
+Mobile responsive.
+
+Phase 3:
+Native mobile only if traction proves it.
+
+You don’t need React Native yet.
+
+7️⃣ Time horizon for going serious
+
+This is not a hobby for you.
+
+If Phase 1 works and:
+
+You use it daily
+
+It genuinely improves your clarity
+
+10+ people love it
+
+You will:
+
+Move to production stack
+
+Potentially bring in dev help
+
+Potentially raise
+
+You’re not building a toy.
+
+8️⃣ App inspirations (accurate for you)
+PocketSmith
+
+You like:
+
+Statement-based import
+
+Rule engine
+
+Structure
+
+But it lacks:
+
+True live surplus modeling
+
+Strong allocation engine
+
+Modern UX
+
+Investment integration
+
+YNAB
+
+Strong:
+
+Envelope logic
+Weak:
+
+Poor investment layer
+
+Not built for credit-card optimization + asset allocation thinking
+
+Monarch / Copilot
+
+Strong:
+
+Clean UX
+Weak:
+
+US-centric
+
+No deep capital allocation modeling
+
+No offset logic

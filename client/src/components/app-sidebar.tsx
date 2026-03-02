@@ -1,6 +1,6 @@
 import { Link, useLocation } from "wouter";
 import {
-  LayoutDashboard, ArrowLeftRight, CreditCard, Tag, Zap, Upload,
+  LayoutDashboard, ArrowLeftRight, CreditCard, Tag, Zap, Upload, PiggyBank,
 } from "lucide-react";
 import {
   Sidebar,
@@ -18,6 +18,7 @@ import {
 const navItems = [
   { title: "Dashboard", url: "/", icon: LayoutDashboard },
   { title: "Transactions", url: "/transactions", icon: ArrowLeftRight },
+  { title: "Budgets", url: "/budgets", icon: PiggyBank },
   { title: "Accounts", url: "/accounts", icon: CreditCard },
   { title: "Categories", url: "/categories", icon: Tag },
   { title: "Rules", url: "/rules", icon: Zap },
@@ -36,7 +37,7 @@ export function AppSidebar() {
           </div>
           <div>
             <p className="font-semibold text-sm leading-none text-sidebar-foreground">BudgetOS</p>
-            <p className="text-xs text-muted-foreground mt-0.5">Personal Finance</p>
+            <p className="text-xs text-muted-foreground mt-0.5">Capital Allocation OS</p>
           </div>
         </div>
       </SidebarHeader>
@@ -69,7 +70,7 @@ export function AppSidebar() {
       </SidebarContent>
 
       <SidebarFooter className="px-4 py-3 border-t border-sidebar-border">
-        <p className="text-xs text-muted-foreground">v1.0.0 MVP</p>
+        <p className="text-xs text-muted-foreground">Phase 1 MVP · AUD</p>
       </SidebarFooter>
     </Sidebar>
   );
