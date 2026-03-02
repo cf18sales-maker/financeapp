@@ -13,8 +13,47 @@ import { apiRequest } from "@/lib/queryClient";
 import type { Transaction, Account, Category } from "@shared/schema";
 import { Search, ArrowLeftRight, Trash2, Tag, X, Filter } from "lucide-react";
 
-function formatAmount(amount: number, currency = "USD") {
-  return new Intl.NumberFormat("en-US", { style: "currency", currency }).format(amount);
+function formatAmount(amount: number, currency = "AUD") {
+  return new Intl.NumberFormat("en-AU", { style: "currency", currency }).format(amount);
+}
+
+const FV_OPTIONS = [
+  { value: "fixed", label: "Fixed", color: "#6366f1", title: "Fixed — non-negotiable recurring cost" },
+  { value: "variable", label: "Variable", color: "#f59e0b", title: "Variable — flexible, could be reduced" },
+  { value: "discretionary", label: "Disco", color: "#ec4899", title: "Discretionary — optional / can skip" },
+] as const;
+
+type FVValue = "fixed" | "variable" | "discretionary";
+
+function FVTag({ value, onChange, disabled }: {
+  value: FVValue | null | undefined;
+  onChange: (v: FVValue | null) => void;
+  disabled?: boolean;
+}) {
+  return (
+    <div className="flex items-center gap-1">
+      {FV_OPTIONS.map(opt => {
+        const active = value === opt.value;
+        return (
+          <button
+            key={opt.value}
+            title={opt.title}
+            disabled={disabled}
+            onClick={() => onChange(active ? null : opt.value)}
+            className={`text-[10px] font-semibold px-1.5 py-0.5 rounded transition-colors border ${
+              active
+                ? "text-white border-transparent"
+                : "text-muted-foreground bg-transparent border-border hover:border-current"
+            }`}
+            style={active ? { backgroundColor: opt.color, borderColor: opt.color } : { color: opt.color }}
+            data-testid={`fv-tag-${opt.value}`}
+          >
+            {opt.label}
+          </button>
+        );
+      })}
+    </div>
+  );
 }
 
 export default function Transactions() {
@@ -42,6 +81,19 @@ export default function Transactions() {
 
   const accountMap = Object.fromEntries(accounts.map(a => [a.id, a]));
   const categoryMap = Object.fromEntries(categories.map(c => [c.id, c]));
+
+  const updateMutation = useMutation({
+    mutationFn: async ({ id, data }: { id: string; data: Partial<Transaction> }) => {
+      const res = await apiRequest("PUT", `/api/transactions/${id}`, data);
+      return res.json();
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["/api/transactions"] });
+      qc.invalidateQueries({ queryKey: ["/api/stats/spending-by-category"] });
+      qc.invalidateQueries({ queryKey: ["/api/stats"] });
+    },
+    onError: (e: Error) => toast({ title: "Error", description: e.message, variant: "destructive" }),
+  });
 
   const assignMutation = useMutation({
     mutationFn: async ({ id, categoryId }: { id: string; categoryId: string | null }) => {
@@ -80,11 +132,21 @@ export default function Transactions() {
     setShowUncategorized(false);
   }
 
+  const untaggedDebits = transactions.filter(t => t.type === "debit" && !t.fixedVariable).length;
+
   return (
     <div className="p-6 max-w-7xl mx-auto space-y-5">
-      <div>
-        <h1 className="text-2xl font-bold tracking-tight" data-testid="heading-transactions">Transactions</h1>
-        <p className="text-muted-foreground text-sm mt-1">{transactions.length} transaction{transactions.length !== 1 ? "s" : ""} found</p>
+      <div className="flex items-start justify-between gap-4 flex-wrap">
+        <div>
+          <h1 className="text-2xl font-bold tracking-tight" data-testid="heading-transactions">Transactions</h1>
+          <p className="text-muted-foreground text-sm mt-1">{transactions.length} transaction{transactions.length !== 1 ? "s" : ""} found</p>
+        </div>
+        {untaggedDebits > 0 && (
+          <div className="flex items-center gap-2 text-xs text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800 rounded-md px-3 py-2">
+            <span className="font-semibold">{untaggedDebits} untagged</span>
+            <span className="text-amber-500">— tag Fixed/Variable to improve surplus accuracy</span>
+          </div>
+        )}
       </div>
 
       <div className="flex items-center gap-3 flex-wrap">
@@ -136,6 +198,19 @@ export default function Transactions() {
         )}
       </div>
 
+      <div className="flex items-center gap-4 text-xs text-muted-foreground px-1">
+        <span className="font-medium">Tag expense type:</span>
+        <span className="flex items-center gap-1">
+          <span className="inline-block w-2 h-2 rounded-full bg-[#6366f1]" /> Fixed — committed monthly costs
+        </span>
+        <span className="flex items-center gap-1">
+          <span className="inline-block w-2 h-2 rounded-full bg-[#f59e0b]" /> Variable — flexible spending
+        </span>
+        <span className="flex items-center gap-1">
+          <span className="inline-block w-2 h-2 rounded-full bg-[#ec4899]" /> Disco — optional/irregular
+        </span>
+      </div>
+
       <Card>
         <CardContent className="p-0">
           {isLoading ? (
@@ -164,8 +239,9 @@ export default function Transactions() {
                     <TableHead>Description</TableHead>
                     <TableHead>Account</TableHead>
                     <TableHead>Category</TableHead>
+                    <TableHead className="w-40">Type</TableHead>
                     <TableHead className="text-right w-32">Amount</TableHead>
-                    <TableHead className="w-20" />
+                    <TableHead className="w-10" />
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -208,9 +284,20 @@ export default function Transactions() {
                             </Button>
                           )}
                         </TableCell>
+                        <TableCell>
+                          {tx.type === "debit" ? (
+                            <FVTag
+                              value={tx.fixedVariable as FVValue | null}
+                              onChange={v => updateMutation.mutate({ id: tx.id, data: { fixedVariable: v ?? undefined } })}
+                              disabled={updateMutation.isPending}
+                            />
+                          ) : (
+                            <span className="text-xs text-muted-foreground">Income</span>
+                          )}
+                        </TableCell>
                         <TableCell className="text-right">
                           <span className={`text-sm font-semibold tabular-nums ${tx.type === "credit" ? "text-chart-1" : ""}`}>
-                            {tx.type === "credit" ? "+" : "-"}{formatAmount(parseFloat(tx.amount))}
+                            {tx.type === "credit" ? "+" : "-"}{formatAmount(parseFloat(tx.amount), tx.currency || "AUD")}
                           </span>
                         </TableCell>
                         <TableCell>
